@@ -19,23 +19,20 @@
 #include "quantum.h"
 #include "version.h"
 
-/* #define RAM_MAGIC_LOCATION 0x20001ffc */
-/* #define IAP_MAGIC_VALUE 0x0000fab2 */
-
-#define RESET_BL_MAGIC  0x55aafaf5U
-#define NAME_SLUG       "vortex/race3"
+// The stock bootloader stays in IAP mode when this RAM word (just past the end
+// of ram0 in the linker script, so it survives reset) holds RESET_BL_MAGIC.
+#define RAM_MAGIC_LOCATION 0x20003ffcU
+#define RESET_BL_MAGIC     0x55aafaf5U
+#define NAME_SLUG          "vortex/race3"
 
 //const uint8_t firmware_id[] __attribute__ ((section (".id.firmware"))) =
 //    "qmk_pok3r;" NAME_SLUG ";" QMK_VERSION ";" QMK_BUILDDATE;
 
 void bootloader_jump(void) {
-
     wait_us(10000); // 10 ms
     chSysDisable(); // mask all interrupts
     usbDisconnectBus(&USB_DRIVER); // disconnect usb
-    // SBVT registers are not reset on reset
-    // SBVT1 is read by pok3r bootloader to stop in bootloader
-    FMC->SBVT[1] = RESET_BL_MAGIC;
+    *(volatile uint32_t *)RAM_MAGIC_LOCATION = RESET_BL_MAGIC;
     wait_us(50000); // 50 ms
     __disable_irq();
     NVIC_SystemReset();

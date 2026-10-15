@@ -121,12 +121,24 @@ const PALConfig pal_default_config = {
 };
 
 // void __early_init(void) { ht32_clock_init(); }
-void __early_init(void) { hal_lld_init(); }
+void __early_init(void) {
+    // The stock bootloader starts the watchdog before jumping here
+    // (WDTMR1 = 0x5FFF, WDTMR0 = 0x1AFFF: ~4s at LSI/32, reset on underflow)
+    // and counts watchdog resets in RAM; after 5 of them it stops starting
+    // the firmware and runs its own built-in keyboard instead. QMK does not
+    // feed the watchdog (and blocks while waiting for USB or in suspend), so
+    // turn it off. The bootloader never sets WDTLOCK, so this is allowed.
+    WDT->PR  = 0x35CA; // unlock WDT registers
+    WDT->MR0 = 0;      // WDTEN = 0, WDTRSTEN = 0
+
+    hal_lld_init();
+}
 
 void boardInit(void) {}
 
-// const uint8_t bootloader_magic[] __attribute__ ((section (".magic.bootloader"))) = {
-//     0x00, 0x50, 0x04, 0x03, // builtin bootloader CRC will fail if this word is not correct
-//     0x01, 0x00, 0x00, 0x34,
-//     0x04, 0x00, 0x02, 0x00, // probably not necessary
-// };
+// The stock bootloader only jumps to the firmware if this word is at 0x3bf8
+const uint8_t bootloader_magic[] __attribute__((section(".magic.bootloader"), used)) = {
+    0x00, 0x50, 0x04, 0x03, // builtin bootloader CRC will fail if this word is not correct
+    0x01, 0x00, 0x00, 0x34,
+    0x04, 0x00, 0x02, 0x00, // probably not necessary
+};
