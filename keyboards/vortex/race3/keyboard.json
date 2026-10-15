@@ -1,0 +1,13 @@
+{
+    "keyboard_name": "Vortex Race 3 (QMK)",
+    "usb": {
+        "vid": "0x04D9",
+        "pid": "0x0192"
+    },
+    "community_layouts": ["75_ansi"],
+    "diode_direction": "ROW2COL",
+    "matrix_pins": {
+        "cols": ["A3", "A4", "B10", "D0", "B11", "A11", "A0", "A1", "A2", "D1", "C10"],
+        "rows": ["C9", "A5", "A6", "A7", "C11", "C13", "C14", "C15"]
+    }
+}
