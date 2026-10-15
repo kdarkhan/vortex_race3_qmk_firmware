@@ -18,7 +18,6 @@
 #pragma once
 
 #include "pin_defs.h"
-#include "config_led.h"
 
 
 // #define DIODE_DIRECTION ROW2COL

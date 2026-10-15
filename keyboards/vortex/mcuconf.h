@@ -45,8 +45,12 @@
 // SysTick uses processor clock at 72MHz
 #define HT32_ST_USE_HCLK        TRUE
 
-#define HT32_GPT_USE_BFTM0                  TRUE
-#define HT32_GPT_BFTM0_IRQ_PRIORITY         4
+// BFTM1 scans the LED rows (rgb_driver.c), below USB priority
+#define HT32_GPT_USE_BFTM1                  TRUE
+#define HT32_GPT_BFTM1_IRQ_PRIORITY         6
+
+// GPTM1 CH0 on C0 is the MBIA043 grayscale clock
+#define HT32_PWM_USE_GPTM1                  TRUE
 /*
  * Peripheral driver settings
  */

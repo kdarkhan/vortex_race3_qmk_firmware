@@ -35,9 +35,8 @@ AUDIO_ENABLE = no           # Audio output
 EEPROM_DRIVER = transient
 # WEAR_LEVELING_DRIVER = spi_flash
 
-# Custom RGB matrix handling
-RGB_MATRIX_ENABLE = no
-RGB_MATRIX_DRIVER = custom
+# RGB matrix is enabled in keyboard.json
+SRC += rgb_driver.c
 
 # Keys
 # CUSTOM_MATRIX = lite
