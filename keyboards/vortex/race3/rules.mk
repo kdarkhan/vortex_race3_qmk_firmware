@@ -9,7 +9,7 @@ MCU_STARTUP = ht32f165x
 
 BOARD = RACE_3
 
-# Bootloader selection: stock Vortex bootloader, enter it with LShift+RShift+B
+# Bootloader selection: stock Vortex bootloader, enter it with Pn+Esc (default keymap)
 BOOTLOADER = custom
 PROGRAM_CMD = pok3rtool flash --no-boot qmk $(BUILD_DIR)/$(TARGET).bin
 

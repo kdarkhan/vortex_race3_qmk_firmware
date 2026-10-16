@@ -121,18 +121,8 @@ const PALConfig pal_default_config = {
 };
 
 // void __early_init(void) { ht32_clock_init(); }
-void __early_init(void) {
-    // The stock bootloader starts the watchdog before jumping here
-    // (WDTMR1 = 0x5FFF, WDTMR0 = 0x1AFFF: ~4s at LSI/32, reset on underflow)
-    // and counts watchdog resets in RAM; after 5 of them it stops starting
-    // the firmware and runs its own built-in keyboard instead. QMK does not
-    // feed the watchdog (and blocks while waiting for USB or in suspend), so
-    // turn it off. The bootloader never sets WDTLOCK, so this is allowed.
-    WDT->PR  = 0x35CA; // unlock WDT registers
-    WDT->MR0 = 0;      // WDTEN = 0, WDTRSTEN = 0
-
-    hal_lld_init();
-}
+// The stock bootloader leaves the watchdog running, it is fed in vortex.c
+void __early_init(void) { hal_lld_init(); }
 
 void boardInit(void) {}
 

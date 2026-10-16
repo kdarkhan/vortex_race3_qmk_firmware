@@ -9,14 +9,18 @@
 This firmware runs from 0x3400 behind the stock Vortex bootloader, which stays
 installed. The stock firmware is overwritten.
 
+The `default` keymap is a standard 75% ANSI layout. Holding Pn (or Fn) gives
+the RGB controls on the number row (toggle, effect, hue, saturation,
+brightness, speed) and the bootloader on Esc.
+
 Make example for this keyboard (after setting up your build environment):
 
     make vortex/race3:default
 
 ## Flashing
 
-1. Enter the bootloader with LShift + RShift + B (or, from the stock firmware,
-   `pok3rtool reboot --bootloader`). It shows up as `04d9:1192`.
+1. Enter the bootloader with Pn + Esc on the default keymap (or, from the stock
+   firmware, `pok3rtool reboot --bootloader`). It shows up as `04d9:1192`.
 2. Flash with [pok3rtool](https://github.com/pok3r-custom/pok3rtool):
 
        pok3rtool flash --no-boot qmk vortex_race3_default.bin
