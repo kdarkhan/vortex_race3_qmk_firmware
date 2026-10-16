@@ -17,56 +17,62 @@
 #include QMK_KEYBOARD_H
 
 enum layers {
-    BASE,
+    BASE_HRM, // default: QWERTY with home row mods
+    BASE,     // plain QWERTY fallback: Fn+W switches to it, Fn+D back to BASE_HRM
     FN1,
-    FN2,
+    PN,
 };
 
+// Home row mods, same as the Sofle keymap
+#define HRM_A LSFT_T(KC_A)
+#define HRM_S LALT_T(KC_S)
+#define HRM_D LCTL_T(KC_D)
+#define HRM_F LGUI_T(KC_F)
+#define HRM_J RGUI_T(KC_J)
+#define HRM_K RCTL_T(KC_K)
+#define HRM_L RALT_T(KC_L)
+#define HRM_SCLN RSFT_T(KC_SCLN)
+
 // clang-format off
-// Key symbols are based on QMK. Use them to remap your keyboard
+const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /*
-* Layer BASE
-* ,-----------------------------------------------------------------------------------------.
-* | esc |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |    Bksp   |
-* |-----------------------------------------------------------------------------------------+
-* | Tab    |  q  |  w  |  e  |  r  |  t  |  y  |  u  |  i  |  o  |  p  |  [  |  ]  |   \    |
-* |-----------------------------------------------------------------------------------------+
-* | Caps    |  a  |  s  |  d  |  f  |  g  |  h  |  j  |  k  |  l  |  ;  |  '  |    Enter    |
-* |-----------------------------------------------------------------------------------------+
-* | Shift      |  z  |  x  |  c  |  v  |  b  |  n  |  m  |  ,  |  .  |  /  |    Shift       |
-* |-----------------------------------------------------------------------------------------+
-* | Ctrl  |  L1   |  Alt  |               space             |  Alt  |  FN1  |  FN2  | Ctrl  |
-* \-----------------------------------------------------------------------------------------/
-* Layer TAP in BASE
-* ,-----------------------------------------------------------------------------------------.
-* |     |     |     |     |     |     |     |     |     |     |     |     |     |           |
-* |-----------------------------------------------------------------------------------------+
-* |        |     |     |     |     |     |     |     |     |     |     |     |     |        |
-* |-----------------------------------------------------------------------------------------+
-* |         |     |     |     |     |     |     |     |     |     |     |     |             |
-* |-----------------------------------------------------------------------------------------+
-* |            |     |     |     |     |     |     |     |     |     |     |       UP       |
-* |-----------------------------------------------------------------------------------------+
-* |       |       |       |                                 |       |  LEFT | DOWN  | RIGHT |
-* \-----------------------------------------------------------------------------------------/
-*/
- const uint16_t keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
- [BASE] = LAYOUT_75_ansi( /* Base */
-    KC_ESC,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  KC_NO, KC_DEL,
+ * BASE_HRM: tap for the letter, hold for the modifier
+ *   A = Shift, S = Alt, D = Ctrl, F = GUI   |   J = GUI, K = Ctrl, L = Alt, ; = Shift
+ * Pn (next to Delete) = PN layer, Fn (right of right Alt) = FN1 layer
+ */
+[BASE_HRM] = LAYOUT_75_ansi(
+    KC_ESC,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  MO(PN),  KC_DEL,
+    KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC, KC_HOME,
+    KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC, KC_BSLS, KC_PGUP,
+    KC_CAPS, HRM_A,   HRM_S,   HRM_D,   HRM_F,   KC_G,    KC_H,    HRM_J,   HRM_K,   HRM_L,   HRM_SCLN,KC_QUOT, KC_ENT,  KC_PGDN,
+    KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT, KC_UP,   KC_END,
+    KC_LCTL, KC_LGUI, KC_LALT,                   KC_SPC,                    KC_RALT, MO(FN1), KC_RCTL, KC_LEFT, KC_DOWN, KC_RGHT
+),
+[BASE] = LAYOUT_75_ansi(
+    KC_ESC,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  MO(PN),  KC_DEL,
     KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC, KC_HOME,
     KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC, KC_BSLS, KC_PGUP,
     KC_CAPS, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT, KC_ENT,  KC_PGDN,
     KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT, KC_UP,   KC_END,
     KC_LCTL, KC_LGUI, KC_LALT,                   KC_SPC,                    KC_RALT, MO(FN1), KC_RCTL, KC_LEFT, KC_DOWN, KC_RGHT
 ),
- // Fn + 1..-: toggle, next/prev effect, hue, saturation, brightness, speed
- [FN1] = LAYOUT_75_ansi(
+// Fn + W: plain QWERTY, Fn + D: home row mods
+[FN1] = LAYOUT_75_ansi(
+    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, DF(BASE), _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______, DF(BASE_HRM), _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______,                   _______,                   _______, _______, _______, _______, _______, _______
+),
+// Pn + 1..-: toggle, next/prev effect, hue, saturation, brightness, speed
+[PN] = LAYOUT_75_ansi(
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
     _______, RM_TOGG, RM_NEXT, RM_PREV, RM_HUEU, RM_HUED, RM_SATU, RM_SATD, RM_VALU, RM_VALD, RM_SPDU, RM_SPDD, _______, _______, _______,
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
     _______, _______, _______,                   _______,                   _______, _______, _______, _______, _______, _______
-)
+),
 };
 // clang-format on

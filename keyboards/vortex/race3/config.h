@@ -35,8 +35,6 @@
 //#define MATRIX_COL_PINS \ -
 //    { A3, A4, B10, D0, B11, A11, A0, A1, A2, D1, C10 }
 
-// Obins stock firmware has something similar to this already enabled, but disabled by default in QMK
-#define PERMISSIVE_HOLD
 
 // SPI configuration
 /* #define SPI_DRIVER SPID1 */
