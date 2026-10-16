@@ -13,8 +13,5 @@ BOARD = RACE_3
 BOOTLOADER = custom
 PROGRAM_CMD = pok3rtool flash --no-boot qmk $(BUILD_DIR)/$(TARGET).bin
 
-# Settings are not persisted: there is no HT32 flash driver for wear leveling yet
-EEPROM_DRIVER = transient
-
 # RGB matrix is enabled in keyboard.json
 SRC += rgb_driver.c

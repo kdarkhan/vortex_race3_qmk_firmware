@@ -19,6 +19,10 @@
 
 #include "pin_defs.h"
 
+// QMK derives CPU_CLOCK from CK_SYS (the 144 MHz PLL) on HT32, but the core
+// runs at CK_AHB = 72 MHz, which made every wait_us() twice as long.
+#define REALTIME_COUNTER_CLOCK 72000000UL
+
 
 // #define DIODE_DIRECTION ROW2COL
 
@@ -36,20 +40,21 @@
 //    { A3, A4, B10, D0, B11, A11, A0, A1, A2, D1, C10 }
 
 
-// SPI configuration
-/* #define SPI_DRIVER SPID1 */
-/* #define SPI_SCK_PIN A0 */
-/* #define SPI_MOSI_PIN A1 */
-/* #define SPI_MISO_PIN A2 */
+// External SPI flash (GigaDevice GD25Q41B, 4 Mbit) on SPI1, same pins and
+// commands as the stock firmware uses. QMK keeps its EEPROM data there.
+#define SPI_DRIVER SPID1
+#define SPI_SCK_PIN B7
+#define SPI_MOSI_PIN B8
+#define SPI_MISO_PIN B9
 
-/* // Flash configuration */
-/* #define EXTERNAL_FLASH_SPI_SLAVE_SELECT_PIN A3 */
-/* #define EXTERNAL_FLASH_SPI_CLOCK_DIVISOR 16 */
-/* #define EXTERNAL_FLASH_PAGE_SIZE 256 */
-/* #define EXTERNAL_FLASH_SECTOR_SIZE 4096 */
-/* #define EXTERNAL_FLASH_BLOCK_SIZE 4096 */
-/* #define EXTERNAL_FLASH_SIZE (256 * 1024) // 2M-bit flash size */
+#define EXTERNAL_FLASH_SPI_SLAVE_SELECT_PIN B6
+#define EXTERNAL_FLASH_SPI_CLOCK_DIVISOR 16 // 72 MHz / 16 = 4.5 MHz
+#define EXTERNAL_FLASH_PAGE_SIZE 256
+#define EXTERNAL_FLASH_SECTOR_SIZE 4096
+// QMK erases "blocks" with command 0xD8, which is a 64 KB erase on this chip
+#define EXTERNAL_FLASH_BLOCK_SIZE (64 * 1024)
+#define EXTERNAL_FLASH_SIZE (512 * 1024)
 
-/* // Wear-leveling driver configuration */
-/* #define WEAR_LEVELING_LOGICAL_SIZE 1024 */
-/* #define WEAR_LEVELING_BACKING_SIZE (WEAR_LEVELING_LOGICAL_SIZE * 2) */
+// Use the 64 KB block at 0x60000, away from the start of the flash where the
+// stock firmware may keep its data. (QMK's range check rejects the last block.)
+#define WEAR_LEVELING_EXTERNAL_FLASH_BLOCK_OFFSET 6

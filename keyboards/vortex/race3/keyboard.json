@@ -10,6 +10,13 @@
         "cols": ["A3", "A4", "B10", "D0", "B11", "A11", "A0", "A1", "A2", "D1", "C10"],
         "rows": ["C9", "A5", "A6", "A7", "C11", "C13", "C14", "C15"]
     },
+    "eeprom": {
+        "driver": "wear_leveling",
+        "wear_leveling": {
+            "driver": "spi_flash",
+            "backing_size": 2048
+        }
+    },
     "features": {
         "extrakey": true,
         "rgb_matrix": true

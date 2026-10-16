@@ -26,9 +26,8 @@
 
 // #define SERIAL_USB_BUFFERS_SIZE 256
 
-/* #define HAL_USE_SPI TRUE */
-/* #define SPI_USE_WAIT TRUE */
-/* #define SPI_SELECT_MODE SPI_SELECT_MODE_PAD */
+// SPI1 talks to the external GD25Q41B flash used for EEPROM emulation
+#define HAL_USE_SPI TRUE
 
 #define HAL_USE_GPT TRUE
 #define HAL_USE_PWM TRUE

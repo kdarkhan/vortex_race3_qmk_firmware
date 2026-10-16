@@ -73,6 +73,6 @@
  * SPI driver setting
  */
 
-#define HT32_SPI_USE_SPI1 FALSE
+#define HT32_SPI_USE_SPI1 TRUE
 #define HT32_SPI1_IRQ_PRIORITY 9
 
