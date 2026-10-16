@@ -27,7 +27,7 @@
  * - Hardware LED index = column * 8 + row. Every key sits at the same position
  *   as its LED when columns are numbered in the stock firmware order, which
  *   differs from our matrix only by col 0 (A3) being stock column 8.
- *   Extra LEDs: 88/89 next to the spacebar, 90 next to caps lock. 83 and 78 are
+ *   Extra LEDs: 89/88 left/right of the spacebar, 90 next to caps lock. 83 and 78 are
  *   presumably the ISO-only keys and are not used.
  *
  * Protocol (MBIA043): bits are shifted MSB first on DCLK rising edges. LE high
@@ -46,8 +46,8 @@
 
 // Extra LEDs appended after the keys in keyboard.json, in this order
 #define VORTEX_EXTRA_LED_CAPS 90
-#define VORTEX_EXTRA_LED_SPACE_LEFT 88
-#define VORTEX_EXTRA_LED_SPACE_RIGHT 89
+#define VORTEX_EXTRA_LED_SPACE_LEFT 89
+#define VORTEX_EXTRA_LED_SPACE_RIGHT 88
 
 #define PIN_SDI (1U << 8)   // A8
 #define PIN_DCLK (1U << 14) // A14
@@ -290,6 +290,17 @@ static void flush(void) {
     }
     colors_dirty  = false;
     frame_pending = true;
+}
+
+// Called before jumping to the bootloader. The stock firmware also turns the LEDs
+// off first (0x64ec): after a reset the LED pins float and the drivers keep
+// whatever they last showed, which made bootloader flash erase/write unreliable.
+void vortex_rgb_shutdown(void) {
+    gptStopTimer(&GPTD_BFTM1);
+    gptStop(&GPTD_BFTM1);
+    palSetLine(LINE_ROW_EN);
+    palClearLine(LINE_LED_POWER);
+    pwmStop(&PWMD_GPTM1);
 }
 
 const rgb_matrix_driver_t rgb_matrix_driver = {

@@ -28,7 +28,14 @@
 //const uint8_t firmware_id[] __attribute__ ((section (".id.firmware"))) =
 //    "qmk_pok3r;" NAME_SLUG ";" QMK_VERSION ";" QMK_BUILDDATE;
 
+#ifdef RGB_MATRIX_ENABLE
+void vortex_rgb_shutdown(void);
+#endif
+
 void bootloader_jump(void) {
+#ifdef RGB_MATRIX_ENABLE
+    vortex_rgb_shutdown();
+#endif
     wait_us(10000); // 10 ms
     chSysDisable(); // mask all interrupts
     usbDisconnectBus(&USB_DRIVER); // disconnect usb
