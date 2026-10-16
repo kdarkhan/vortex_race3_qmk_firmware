@@ -1,6 +1,5 @@
 {
     "manufacturer": "Vortex",
-    "url": "https://openannepro.github.io/",
     "maintainer": "darkhan",
     "usb": {
         "vid": "0x04D9",

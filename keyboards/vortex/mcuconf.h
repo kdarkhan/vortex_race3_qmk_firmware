@@ -28,10 +28,11 @@
  * Clock configuration.
  */
 
-// This configuration:
+// This configuration (same as the stock bootloader sets up):
 // 8 MHz HSE crystal
-// PLL multiplies HSE to 48 MHz core and peripheral clock
-// 48 MHz to UART
+// PLL multiplies HSE to 144 MHz
+// 72 MHz core and peripheral clock (HT32F1654 maximum)
+// 72 MHz to UART
 // 48 MHz to USB
 
 #define HT32_CK_HSE_FREQUENCY   8000000UL           // 8 MHz

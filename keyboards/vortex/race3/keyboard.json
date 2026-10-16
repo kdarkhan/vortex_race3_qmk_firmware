@@ -11,6 +11,7 @@
         "rows": ["C9", "A5", "A6", "A7", "C11", "C13", "C14", "C15"]
     },
     "features": {
+        "extrakey": true,
         "rgb_matrix": true
     },
     "rgb_matrix": {

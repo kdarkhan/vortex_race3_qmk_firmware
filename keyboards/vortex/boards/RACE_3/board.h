@@ -16,7 +16,7 @@
 
 #pragma once
 /*
- * Setup for Anne Pro 2 board.
+ * Setup for the Vortex Race 3 board (HT32F1654, LQFP-64).
  */
 
 /*
@@ -24,11 +24,8 @@
  */
 #define BOARD_NAME "Vortex Race 3"
 
-// #define HT32F52342
 #define HT32F165x
 #define HT32F1654
-
-#define FLASH_SIZE (0x10000 - 0x4000)  // 64kB - 16kB
 
 #if !defined(_FROM_ASM_)
 #ifdef __cplusplus
