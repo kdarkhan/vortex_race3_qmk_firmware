@@ -25,9 +25,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /*
  * PN: Pn + 1..-: RGB toggle, next/prev effect, hue, saturation, brightness, speed
  *     Pn + Esc: jump to the bootloader for flashing
+ *     Pn + F1..F6: mute, volume down/up, prev/play-pause/next track
+ *     Pn + F10..F12: Print Screen, Scroll Lock, Pause; Pn + Del: Insert
  */
 [PN] = LAYOUT_75_ansi(
-    QK_BOOT, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    QK_BOOT, KC_MUTE, KC_VOLD, KC_VOLU, KC_MPRV, KC_MPLY, KC_MNXT, _______, _______, _______, KC_PSCR, KC_SCRL, KC_PAUS, _______, KC_INS,
     _______, RM_TOGG, RM_NEXT, RM_PREV, RM_HUEU, RM_HUED, RM_SATU, RM_SATD, RM_VALU, RM_VALD, RM_SPDU, RM_SPDD, _______, _______, _______,
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
