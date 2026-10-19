@@ -24,6 +24,10 @@ enum layers {
     PN,
 };
 
+enum custom_keycodes {
+    EURO = SAFE_RANGE, // types €, see process_record_user
+};
+
 // Home row mods, same as the Sofle keymap
 #define HRM_A LSFT_T(KC_A)
 #define HRM_S LALT_T(KC_S)
@@ -70,9 +74,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Fn + W: plain QWERTY, Fn + D: home row mods (both remembered across replugs)
 // Fn + F1..F6: mute, volume down/up, prev/play-pause/next track
 // Fn + F10..F12: Print Screen, Scroll Lock, Pause; Fn + Del: Insert
+// Fn + 4: €
 [FN1] = LAYOUT_75_ansi(
     _______, KC_MUTE, KC_VOLD, KC_VOLU, KC_MPRV, KC_MPLY, KC_MNXT, _______, _______, _______, KC_PSCR, KC_SCRL, KC_PAUS, _______, KC_INS,
-    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______, _______, EURO,    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
     _______, _______, PDF(BASE), _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
     _______, _______, _______, PDF(BASE_HRM), _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
@@ -89,3 +94,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 };
 // clang-format on
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case EURO:
+            if (record->event.pressed) {
+                switch (detected_host_os()) {
+                    case OS_MACOS:
+                    case OS_IOS:
+                        // Built into the standard US layout, no Unicode Hex Input needed
+                        tap_code16(LALT(LSFT(KC_2)));
+                        break;
+                    default:
+                        // Linux (and anything undetected): Ctrl+Shift+U 20ac Space
+                        register_unicode(0x20AC);
+                        break;
+                }
+            }
+            return false;
+    }
+    return true;
+}
