@@ -19,6 +19,7 @@
 enum layers {
     BASE_HRM, // default: QWERTY with home row mods
     BASE,     // plain QWERTY fallback: Fn+W switches to it, Fn+D back to BASE_HRM
+    MAC,      // on top of either base when on macOS: swaps left Win and Alt
     NAV,      // hold Caps Lock on BASE_HRM: HJKL arrows
     FN1,
     PN,
@@ -26,6 +27,8 @@ enum layers {
 
 enum custom_keycodes {
     EURO = SAFE_RANGE, // types €, see process_record_user
+    MAC_ON,            // force macOS mode (MAC layer on)
+    MAC_OFF,           // force Linux mode (MAC layer off)
 };
 
 // Home row mods, same as the Sofle keymap
@@ -62,6 +65,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT, KC_UP,   KC_END,
     KC_LCTL, KC_LGUI, KC_LALT,                   KC_SPC,                    KC_RALT, MO(FN1), KC_RCTL, KC_LEFT, KC_DOWN, KC_RGHT
 ),
+/*
+ * MAC: left Win/Alt become Alt/Win (Option/Command in Mac order)
+ * Turned on by OS detection, or by hand with Fn+M / Fn+L; never saved to EEPROM
+ */
+[MAC] = LAYOUT_75_ansi(
+    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    _______, KC_LALT, KC_LGUI,                   _______,                   _______, _______, _______, _______, _______, _______
+),
 // HJKL arrows, vim style
 [NAV] = LAYOUT_75_ansi(
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
@@ -75,12 +90,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Fn + F1..F6: mute, volume down/up, prev/play-pause/next track
 // Fn + F10..F12: Print Screen, Scroll Lock, Pause; Fn + Del: Insert
 // Fn + 4: €
+// Fn + M: macOS mode (swap left Win/Alt), Fn + L: Linux mode
 [FN1] = LAYOUT_75_ansi(
     _______, KC_MUTE, KC_VOLD, KC_VOLU, KC_MPRV, KC_MPLY, KC_MNXT, _______, _______, _______, KC_PSCR, KC_SCRL, KC_PAUS, _______, KC_INS,
     _______, _______, _______, _______, EURO,    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
     _______, _______, PDF(BASE), _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-    _______, _______, _______, PDF(BASE_HRM), _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______, PDF(BASE_HRM), _______, _______, _______, _______, _______, MAC_OFF, _______, _______, _______, _______,
+    _______, _______, _______, _______, _______, _______, _______, MAC_ON,  _______, _______, _______, _______, _______, _______,
     _______, _______, _______,                   _______,                   _______, _______, _______, _______, _______, _______
 ),
 // Pn + 1..-: toggle, next/prev effect, hue, saturation, brightness, speed
@@ -95,21 +111,42 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 // clang-format on
 
+bool process_detected_host_os_user(os_variant_t os) {
+    switch (os) {
+        case OS_MACOS:
+        case OS_IOS:
+            layer_on(MAC);
+            break;
+        case OS_UNSURE:
+            break; // keep the current mode, fix it by hand if needed
+        default:
+            layer_off(MAC);
+            break;
+    }
+    return true;
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case EURO:
             if (record->event.pressed) {
-                switch (detected_host_os()) {
-                    case OS_MACOS:
-                    case OS_IOS:
-                        // Built into the standard US layout, no Unicode Hex Input needed
-                        tap_code16(LALT(LSFT(KC_2)));
-                        break;
-                    default:
-                        // Linux (and anything undetected): Ctrl+Shift+U 20ac Space
-                        register_unicode(0x20AC);
-                        break;
+                if (layer_state_is(MAC)) {
+                    // Built into the standard US layout, no Unicode Hex Input needed
+                    tap_code16(LALT(LSFT(KC_2)));
+                } else {
+                    // Linux: Ctrl+Shift+U 20ac Space
+                    register_unicode(0x20AC);
                 }
+            }
+            return false;
+        case MAC_ON:
+            if (record->event.pressed) {
+                layer_on(MAC);
+            }
+            return false;
+        case MAC_OFF:
+            if (record->event.pressed) {
+                layer_off(MAC);
             }
             return false;
     }
