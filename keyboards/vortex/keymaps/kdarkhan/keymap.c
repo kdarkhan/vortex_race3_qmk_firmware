@@ -134,8 +134,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     // Built into the standard US layout, no Unicode Hex Input needed
                     tap_code16(LALT(LSFT(KC_2)));
                 } else {
-                    // Linux: Ctrl+Shift+U 20ac Space
-                    register_unicode(0x20AC);
+                    // Linux: ISO "< >" key + 4, with KDE's xkb options lv3:lsgt_switch
+                    // ("< >" = AltGr, never used on ANSI) and eurosign:4 (AltGr+4 = €).
+                    // Expected ~/.config/kxkbrc (System Settings > Keyboard > Key Bindings):
+                    //   [Layout]
+                    //   Options=caps:escape,eurosign:4,lv3:lsgt_switch
+                    //   ResetOldOptions=true
+                    register_code(KC_NUBS);
+                    tap_code(KC_4);
+                    unregister_code(KC_NUBS);
                 }
             }
             return false;

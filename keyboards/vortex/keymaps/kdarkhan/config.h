@@ -15,6 +15,3 @@
 
 // Same-hand chords resolve as taps; handedness is derived from the layout
 #define CHORDAL_HOLD
-
-// Unicode input is only used on Linux (Ctrl+Shift+U); macOS gets Option+Shift+2 instead
-#define UNICODE_SELECTED_MODES UNICODE_MODE_LINUX
