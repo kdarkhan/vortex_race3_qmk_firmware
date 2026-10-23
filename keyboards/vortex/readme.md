@@ -36,22 +36,37 @@ Make example for this keyboard (after setting up your build environment):
 
 ## Flashing
 
+Flashing uses [kdarkhan/pok3rtool](https://github.com/kdarkhan/pok3rtool), a
+fork of [pok3rtool](https://github.com/pok3r-custom/pok3rtool) with fixes for
+the Race 3 (branch `race3-flash-repair`):
+
+* `--no-wait` for `flash` and `reboot`: send the reset and return, instead of
+  waiting for the keyboard to come back with pok3rtool's update interface,
+  which QMK does not have. Without it, booting the flashed firmware ends with
+  "No matching device found".
+* Automatic repair after flashing: the stock bootloader occasionally stores
+  parts of the image wrongly ("Checksum check failed"). The fork checks the
+  image in 4 KB blocks and rewrites only the bad ones.
+* The missing Python dependencies (`rarfile`, `pefile`, `dissect.cstruct`) and
+  a crash when the keyboard disconnects during a reboot are fixed.
+
+Install it with:
+
+    pip install --user git+https://github.com/kdarkhan/pok3rtool@race3-flash-repair
+
 1. Enter the bootloader with Pn + Esc on the default keymap (or, from the stock
    firmware, `pok3rtool reboot --bootloader`). It shows up as `04d9:1192`.
-2. Flash with [pok3rtool](https://github.com/pok3r-custom/pok3rtool), either
-   with `qmk flash -kb vortex/race3 -km default` or directly:
+2. Flash, either with `qmk flash -kb vortex/race3 -km default` (which runs the
+   command below) or directly:
 
        pok3rtool flash --no-wait qmk vortex_race3_default.bin   # or vortex_race3_default_iso.bin
 
-   The keyboard reboots into QMK when the flash is done. `--no-wait` makes
-   pok3rtool return after the reset instead of looking for its update
-   interface, which QMK does not have.
+   The keyboard reboots into QMK when the flash is done. The bootloader never
+   starts a firmware that failed verification, so a failed flash can simply be
+   run again.
 
-   The stock bootloader occasionally stores parts of the image wrongly. Recent
-   pok3rtool versions rewrite the bad blocks automatically; with older ones
-   the flash fails with "Checksum check failed" and you just run it again (the
-   bootloader does not start a firmware that failed verification). Older
-   versions also lack `--no-wait`: use `--no-boot` instead and replug the
-   keyboard afterwards.
+With upstream pok3rtool, use `--no-boot` instead of `--no-wait`, run the
+command again if it fails with "Checksum check failed", and replug the keyboard
+afterwards.
 
 See the [build environment setup](https://docs.qmk.fm/#/getting_started_build_tools) and the [make instructions](https://docs.qmk.fm/#/getting_started_make_guide) for more information. Brand new to QMK? Start with our [Complete Newbs Guide](https://docs.qmk.fm/#/newbs).
