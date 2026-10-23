@@ -29,7 +29,10 @@
 // SPI1 talks to the external GD25Q41B flash used for EEPROM emulation
 #define HAL_USE_SPI TRUE
 
-#define HAL_USE_GPT TRUE
-#define HAL_USE_PWM TRUE
+// LED row scan timer and MBIA043 grayscale clock (race3/rgb_driver.c)
+#ifdef RGB_MATRIX_ENABLE
+#    define HAL_USE_GPT TRUE
+#    define HAL_USE_PWM TRUE
+#endif
 
 #include_next <halconf.h>

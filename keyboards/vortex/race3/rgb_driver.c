@@ -57,6 +57,8 @@
 #define LINE_LED_POWER PAL_LINE(IOPORTC, 1)
 #define LINE_ROW_EN PAL_LINE(IOPORTB, 1)
 
+#ifdef RGB_MATRIX_ENABLE
+
 // Row period, the stock firmware uses 60000 cycles at 72 MHz
 #define ROW_PERIOD_US 833
 
@@ -319,3 +321,16 @@ bool rgb_matrix_indicators_advanced_kb(uint8_t led_min, uint8_t led_max) {
     }
     return true;
 }
+
+#else // RGB_MATRIX_ENABLE
+
+// Without the driver the LED circuit floats and some LEDs stay lit, so switch
+// the LED power off and blank the rows
+void vortex_leds_off(void) {
+    palSetLine(LINE_ROW_EN);
+    palSetLineMode(LINE_ROW_EN, PAL_MODE_HT32_AF(AFIO_GPIO) | PAL_HT32_MODE_DIR);
+    palClearLine(LINE_LED_POWER);
+    palSetLineMode(LINE_LED_POWER, PAL_MODE_HT32_AF(AFIO_GPIO) | PAL_HT32_MODE_DIR);
+}
+
+#endif // RGB_MATRIX_ENABLE

@@ -13,5 +13,6 @@ BOARD = RACE_3
 BOOTLOADER = custom
 PROGRAM_CMD = pok3rtool flash --no-boot qmk $(BUILD_DIR)/$(TARGET).bin
 
-# RGB matrix is enabled in keyboard.json
+# RGB matrix is enabled in keyboard.json; set RGB_MATRIX_ENABLE = no in a
+# keymap's rules.mk to build without it (the LEDs are then switched off)
 SRC += rgb_driver.c

@@ -26,6 +26,8 @@
 
 #ifdef RGB_MATRIX_ENABLE
 void vortex_rgb_shutdown(void);
+#else
+void vortex_leds_off(void);
 #endif
 
 /*
@@ -49,6 +51,10 @@ void keyboard_pre_init_kb(void) {
     watchdog_feed(NULL, NULL);
     chVTObjectInit(&watchdog_timer);
     chVTSetContinuous(&watchdog_timer, TIME_MS2I(500), watchdog_feed, NULL);
+
+#ifndef RGB_MATRIX_ENABLE
+    vortex_leds_off();
+#endif
 
     keyboard_pre_init_user();
 }
