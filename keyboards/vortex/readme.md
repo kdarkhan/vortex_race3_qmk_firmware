@@ -38,13 +38,20 @@ Make example for this keyboard (after setting up your build environment):
 
 1. Enter the bootloader with Pn + Esc on the default keymap (or, from the stock
    firmware, `pok3rtool reboot --bootloader`). It shows up as `04d9:1192`.
-2. Flash with [pok3rtool](https://github.com/pok3r-custom/pok3rtool):
+2. Flash with [pok3rtool](https://github.com/pok3r-custom/pok3rtool), either
+   with `qmk flash -kb vortex/race3 -km default` or directly:
 
-       pok3rtool flash --no-boot qmk vortex_race3_default.bin   # or vortex_race3_default_iso.bin
+       pok3rtool flash --no-wait qmk vortex_race3_default.bin   # or vortex_race3_default_iso.bin
 
-   The bootloader's write verification occasionally fails; just run the
-   command again. The bootloader does not start a firmware that failed
-   verification.
-3. Unplug and replug the keyboard.
+   The keyboard reboots into QMK when the flash is done. `--no-wait` makes
+   pok3rtool return after the reset instead of looking for its update
+   interface, which QMK does not have.
+
+   The stock bootloader occasionally stores parts of the image wrongly. Recent
+   pok3rtool versions rewrite the bad blocks automatically; with older ones
+   the flash fails with "Checksum check failed" and you just run it again (the
+   bootloader does not start a firmware that failed verification). Older
+   versions also lack `--no-wait`: use `--no-boot` instead and replug the
+   keyboard afterwards.
 
 See the [build environment setup](https://docs.qmk.fm/#/getting_started_build_tools) and the [make instructions](https://docs.qmk.fm/#/getting_started_make_guide) for more information. Brand new to QMK? Start with our [Complete Newbs Guide](https://docs.qmk.fm/#/newbs).

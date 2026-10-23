@@ -11,7 +11,8 @@ BOARD = RACE_3
 
 # Bootloader selection: stock Vortex bootloader, enter it with Pn+Esc (default keymap)
 BOOTLOADER = custom
-PROGRAM_CMD = pok3rtool flash --no-boot qmk $(BUILD_DIR)/$(TARGET).bin
+# --no-wait: QMK has no update interface for pok3rtool to wait for after the reset
+PROGRAM_CMD = pok3rtool flash --no-wait qmk $(BUILD_DIR)/$(TARGET).bin
 
 # RGB matrix is enabled in keyboard.json; set RGB_MATRIX_ENABLE = no in a
 # keymap's rules.mk to build without it (the LEDs are then switched off)
